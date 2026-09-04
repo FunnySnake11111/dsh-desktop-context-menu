@@ -60,22 +60,6 @@ powershell -ExecutionPolicy Bypass -File .\uninstall.ps1
 
 走标准 `dsh plugin remove` + 自动撤销 host-patch。同样重启 + 硬刷新生效。
 
-## 发布到 npm（维护者）
-
-```powershell
-# 1) 登录 npm
-npm login
-
-# 2) 版本号 + 发布（files 已限定 lib/ + cordis.patch.yml）
-npm version patch        # 或 minor / major
-npm publish
-
-# 3) 打 GitHub tag（release 用）
-git tag v<version> && git push origin --tags
-```
-
-发布后在 GitHub Release 页面创建 release 并附上说明即可。发布后用户即可用上面的 `dsh plugin add dsh-desktop-context-menu` 一键安装。
-
 ## 设置
 
 右键菜单 → **⚙ 设置**（点入二级面板）可即时调整并持久化（localStorage `dsh.desktopContextMenu.settings`）：
