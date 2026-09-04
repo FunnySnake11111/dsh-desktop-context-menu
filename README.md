@@ -18,10 +18,10 @@
 
 ## 内置 host-patch（宿主补丁自愈）
 
-桌面版默认有两处宿主行为会破坏渲染端功能，本插件**自带补丁并自动维护**：
+ningbainb/deepseek-harness-desktop 默认有两处宿主行为会破坏渲染端功能，本插件**自带补丁并自动维护**：
 
-1. **导航策略**（外链转系统浏览器）：桌面版默认拦截渲染端发起的 http(s) 弹窗并静默丢弃外部导航，导致聊天里的超链接、搜索源打不开系统浏览器。补丁 `lib/patches/navigation-policy.mjs` 将其放行到系统浏览器。
-2. **剪贴板权限**（loopback 放行 `clipboard-read`）：桌面版只允许 `clipboard-sanitized-write`，渲染端 `navigator.clipboard.readText()` 被拒，外部复制的内容粘贴失败。补丁 `lib/patches/renderer-permissions.mjs` 在相同安全边界（仅 loopback 来源）下同时放行 `clipboard-read`。
+1. **导航策略**（外链转系统浏览器）：ningbainb/deepseek-harness-desktop 默认拦截渲染端发起的 http(s) 弹窗并静默丢弃外部导航，导致聊天里的超链接、搜索源打不开系统浏览器。补丁 `lib/patches/navigation-policy.mjs` 将其放行到系统浏览器。
+2. **剪贴板权限**（loopback 放行 `clipboard-read`）：ningbainb/deepseek-harness-desktop 只允许 `clipboard-sanitized-write`，渲染端 `navigator.clipboard.readText()` 被拒，外部复制的内容粘贴失败。补丁 `lib/patches/renderer-permissions.mjs` 在相同安全边界（仅 loopback 来源）下同时放行 `clipboard-read`。
 
 自愈机制：
 - 宿主（主进程）加载插件时自动检测 `app.asar` 内各补丁目标是否带 `[user-patch]` 标记；缺失则备份 → 重建（只替换补丁目标，其余 134 个 in-asar 文件字节级不变）→ 写回 → 验证
@@ -48,17 +48,13 @@ dsh plugin --profile desktop add dsh-desktop-context-menu
 node "D:\Deepseek Harness\DeepSeek Harness Desktop\resources\app.asar.unpacked\node_modules\@deepseek-ai\dsh\lib\bin.js" plugin --profile desktop add dsh-desktop-context-menu
 ```
 
-装完后**完全退出并重启 DeepSeek Harness Desktop**，打开 Web GUI 后**强制刷新（Ctrl+F5）**。
-
-> 从旧名 `dsh-chat-search` 升级：先运行旧目录 `uninstall.ps1` 清理，再按上述方式安装新名。
-
 ## 卸载
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File .\uninstall.ps1
 ```
 
-走标准 `dsh plugin remove` + 自动撤销 host-patch。同样重启 + 硬刷新生效。
+走标准 `dsh plugin remove` + 自动撤销 host-patch。
 
 ## 设置
 
