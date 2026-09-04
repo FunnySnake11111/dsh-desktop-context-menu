@@ -1,6 +1,6 @@
 # dsh-desktop-context-menu
 
-**DeepSeek Harness Desktop 专属**右键实用工具菜单插件：页面任意位置选中文本后右键，弹出**常用实用工具菜单**（可配置替换原生菜单或同时显示），并提供可驻留的浮动工具条。
+**专为 [ningbainb/deepseek-harness-desktop](https://github.com/ningbainb/deepseek-harness-desktop) 开发的**右键实用工具菜单插件：页面任意位置选中文本后右键，弹出**常用实用工具菜单**（可配置替换原生菜单或同时显示），并提供可驻留的浮动工具条。
 
 ## 功能
 
@@ -35,28 +35,20 @@
 
 ## 安装
 
-插件已发布到 **npm**，走 DSH 官方安装通道（底层 pnpm，装完自动把声明了 `dsh.bundle` 的依赖登记进 `dsh.profile.bundles`）：
+插件发布到 **npm registry**，使用 DSH 官方安装通道（底层 pnpm，装完自动把声明了 `dsh.bundle` 的依赖登记进 `dsh.profile.bundles`）：
 
 ```powershell
-# 从 npm registry 安装（标准方式，推荐）
-powershell -ExecutionPolicy Bypass -File .\install.ps1 -Source npm
+# 标准方式：从 npm registry 安装
+dsh plugin --profile desktop add dsh-desktop-context-menu
+```
 
-# 或直接走 dsh CLI（等价）
+如果你的 `dsh` CLI 不在 PATH（本机常见情况），用 node 直接调它的入口：
+
+```powershell
 node "D:\Deepseek Harness\DeepSeek Harness Desktop\resources\app.asar.unpacked\node_modules\@deepseek-ai\dsh\lib\bin.js" plugin --profile desktop add dsh-desktop-context-menu
 ```
 
-**本地开发模式**（link: 到本仓库，改代码即时生效、无需重新发布）：
-
-```powershell
-powershell -ExecutionPolicy Bypass -File .\install.ps1          # 默认 link 模式
-```
-
-脚本幂等：
-1. `dsh plugin add <spec>`（link: 本仓库 或 npm 包名）
-2. 自动登记 bundles（无需手动编辑 profile）
-3. 立即应用 host-patch（导航策略 + 剪贴板权限补丁）
-
-然后**完全退出并重启 DeepSeek Harness Desktop**，打开 Web GUI 后**强制刷新（Ctrl+F5）**。
+装完后**完全退出并重启 DeepSeek Harness Desktop**，打开 Web GUI 后**强制刷新（Ctrl+F5）**。
 
 > 从旧名 `dsh-chat-search` 升级：先运行旧目录 `uninstall.ps1` 清理，再按上述方式安装新名。
 
@@ -66,9 +58,9 @@ powershell -ExecutionPolicy Bypass -File .\install.ps1          # 默认 link �
 powershell -ExecutionPolicy Bypass -File .\uninstall.ps1
 ```
 
-走标准 `dsh plugin remove` + 自动撤销 host-patch。同样重启 + 硬刷新生效。（浏览器本地设置如需清除：DevTools 执行 `localStorage.removeItem('dsh.desktopContextMenu.settings')`；旧键 `dsh.chatSearch.settings` 已在首次加载时自动迁移到新键。）
+走标准 `dsh plugin remove` + 自动撤销 host-patch。同样重启 + 硬刷新生效。
 
-## 发布到 npm
+## 发布到 npm（维护者）
 
 ```powershell
 # 1) 登录 npm
@@ -82,7 +74,7 @@ npm publish
 git tag v<version> && git push origin --tags
 ```
 
-发布后在 GitHub Release 页面创建 release 并附上说明即可。
+发布后在 GitHub Release 页面创建 release 并附上说明即可。发布后用户即可用上面的 `dsh plugin add dsh-desktop-context-menu` 一键安装。
 
 ## 设置
 
