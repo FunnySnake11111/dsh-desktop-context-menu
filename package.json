@@ -1,6 +1,6 @@
 {
   "name": "dsh-desktop-context-menu",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "DeepSeek Harness Desktop 专属右键实用工具菜单：编辑、网页/Agent 搜索、Agent 快捷动作、文本工具、翻译与站内搜索、复制整条消息、导出对话（Markdown/JSON/PDF）。纯客户端 DOM 实现，并内嵌 host-patch（导航策略 + 剪贴板权限）宿主自愈，随应用更新不丢失。",
   "type": "module",
   "main": "lib/index.js",
