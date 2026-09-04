@@ -1,0 +1,7 @@
+# dsh-desktop-context-menu bundle patch: insert the plugin entry so the host
+# loader activates it and @deepseek-ai/dsh-client-modules serves its browser
+# half at /plugins/dsh-desktop-context-menu/client.js. Install with
+# install.ps1 (or `dsh plugin --profile desktop add link:<repo>`).
+- insert:
+    - id: desktop-context-menu
+      name: 'dsh-desktop-context-menu'

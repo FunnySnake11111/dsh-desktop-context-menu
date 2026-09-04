@@ -1,0 +1,10 @@
+﻿# 备份文件（不提交）
+*.bak-*
+*.bak
+**/*.bak-*
+**/*.bak
+
+# 系统/编辑器
+.DS_Store
+Thumbs.db
+*.log
