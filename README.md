@@ -55,10 +55,17 @@ node "D:\Deepseek Harness\DeepSeek Harness Desktop\resources\app.asar.unpacked\n
 ## 卸载
 
 ```powershell
-powershell -ExecutionPolicy Bypass -File .\uninstall.ps1
+# 标准方式：从 npm registry 卸载（与安装对称）
+dsh plugin --profile desktop remove dsh-desktop-context-menu
 ```
 
-走标准 `dsh plugin remove` + 自动撤销 host-patch。
+如果你的 `dsh` CLI 不在 PATH，用 node 直接调它的入口：
+
+```powershell
+node "D:\Deepseek Harness\DeepSeek Harness Desktop\resources\app.asar.unpacked\node_modules\@deepseek-ai\dsh\lib\bin.js" plugin --profile desktop remove dsh-desktop-context-menu
+```
+
+> 插件自带的 host-patch（外链转系统浏览器、剪贴板权限）卸载后仍保留在 app.asar 中，不影响使用但不会自动还原。如需一并还原，运行仓库内的 `uninstall.ps1`（先撤销 host-patch，再执行标准卸载）。
 
 ## 设置
 
