@@ -46,7 +46,7 @@ ningbainb/deepseek-harness-desktop 默认有两处宿主行为会破坏渲染端
 dsh plugin --profile desktop add dsh-desktop-context-menu
 ```
 
-如果你的 `dsh` CLI 不在 PATH（本机常见情况），用 node 直接调它的入口：
+如果你的 `dsh` CLI 不在 PATH，用 node 直接调它的入口：
 
 ```powershell
 node "D:\Deepseek Harness\DeepSeek Harness Desktop\resources\app.asar.unpacked\node_modules\@deepseek-ai\dsh\lib\bin.js" plugin --profile desktop add dsh-desktop-context-menu
