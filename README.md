@@ -92,3 +92,15 @@ node "D:\Deepseek Harness\DeepSeek Harness Desktop\resources\app.asar.unpacked\n
 - `lib/patches/orig-*.mjs` —— 各补丁的原版源码（撤销、无备份时还原用）
 - `cordis.patch.yml` —— 注册条目 `desktop-context-menu` → `dsh-desktop-context-menu`
 - `install.ps1` / `uninstall.ps1` —— 安装/卸载（幂等；卸载自动撤销 host-patch）
+
+## 更新日志
+
+### v0.1.2（2026-09-09）
+
+- **适配 DeepSeek Harness Desktop v3.3.0**：host-patch 的 asar 重建白名单支持 v3.3.0 新增的 `runtime-support/` 目录（此前被当作意外文件拒绝，导致自愈在 v3.3.0 下失败、右键菜单失效）。
+- 补丁源与撤销源（`lib/patches/*`）更新为 v3.3.0 原始字节（CRLF），撤销/还原可精确恢复。
+- 补丁行为不变：外链（http/https）转系统浏览器；loopback 来源放行 `clipboard-read`。
+
+### v0.1.1
+
+- npm 发布包 `files` 白名单，排除历史备份文件（`.bak-*`）。
