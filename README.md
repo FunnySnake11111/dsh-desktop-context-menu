@@ -95,6 +95,10 @@ node "D:\Deepseek Harness\DeepSeek Harness Desktop\resources\app.asar.unpacked\n
 
 ## 更新日志
 
+### v0.1.3（2026-09-09）
+
+- **真正修复 v3.3.0 下的自愈失败**：Electron 主进程对 `node:fs` 打补丁，读取 `.asar` 归档本身会抛 `ENOENT: not found in <archive>`；host-patch 改用 Electron 的 `original-fs`（未打补丁的原生 fs）读写 app.asar，纯 Node 自动回退。桌面版 v3.3.0 下已实测自愈成功，外链跳系统浏览器、loopback 剪贴板读取生效。
+
 ### v0.1.2（2026-09-09）
 
 - **适配 DeepSeek Harness Desktop v3.3.0**：host-patch 的 asar 重建白名单支持 v3.3.0 新增的 `runtime-support/` 目录（此前被当作意外文件拒绝，导致自愈在 v3.3.0 下失败、右键菜单失效）。

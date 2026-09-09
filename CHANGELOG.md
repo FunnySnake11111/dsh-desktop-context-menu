@@ -1,5 +1,16 @@
 # 更新日志
 
+## v0.1.3（2026-09-09）
+
+### 修复
+
+- **真正修复 v3.3.0 下的自愈失败**：v0.1.2 虽然放宽了 `runtime-support/` 白名单，但 Electron 主进程对 `node:fs` 打补丁，任何以 `.asar` 结尾的路径都会被当作 asar 归档访问（`readFileFromArchiveSync`），直接读取 app.asar 归档本身会抛 `ENOENT: not found in <archive>`，导致自愈在桌面版宿主里仍然失败、补丁从未真正写入。
+- 现在改用 Electron 提供的 **`original-fs`**（未被打补丁的原生 fs）读写 app.asar，纯 Node 环境自动回退 `node:fs`——自愈在桌面版 v3.3.0 下已实测成功打补丁，外链跳转系统浏览器、loopback 剪贴板读取均生效。
+
+### 行为不变
+
+- 外链（http/https）转系统浏览器；loopback 来源放行 `clipboard-read`。
+
 ## v0.1.2（2026-09-09）
 
 ### 修复
