@@ -1,5 +1,15 @@
 # 更新日志
 
+## v0.1.3（2026-09-15）
+
+### 新增
+
+- **name 防呆检测**：宿主端加载时校验 `package.json` 的 `name` 必须为 `dsh-desktop-context-menu`。若被改成 scoped 名（如发布 GitHub Packages 时），DSH v3.5.0 的 client-modules 会因包名与 loader 条目不一致而跳过该包，导致右键菜单不显示（host 端补丁仍正常）——现在会在宿主日志输出醒目警告。
+
+### 兼容性
+
+- 确认 DeepSeek Harness Desktop **v3.5.0** 下 host-patch 工作正常：v3.5.0 原版仍默认丢弃渲染端外链（`http:` 连 `external` 分类都没有，`window.open` 弹窗一律 deny）且不放行 `clipboard-read`，两处补丁依旧必要，自愈实测通过。
+
 ## v0.1.2-hotfix1（2026-09-09）
 
 ### 修复

@@ -52,6 +52,8 @@ dsh plugin --profile desktop add dsh-desktop-context-menu
 node "D:\Deepseek Harness\DeepSeek Harness Desktop\resources\app.asar.unpacked\node_modules\@deepseek-ai\dsh\lib\bin.js" plugin --profile desktop add dsh-desktop-context-menu
 ```
 
+> **link / 源码安装注意（DSH v3.5.0）**：本地 `package.json` 的 `name` 必须保持 `dsh-desktop-context-menu`。若为了发布 GitHub Packages 而改成 scoped 名（如 `@funnySnake11111/dsh-desktop-context-menu`），DSH v3.5.0 的 client-modules 会因包名与 loader 条目不一致而跳过客户端加载——右键菜单不显示，但 host 端补丁仍正常。改回 `name` 并重启 DSH 即恢复；宿主端也会在启动时输出醒目警告。
+
 ## 卸载
 
 ```powershell
@@ -94,6 +96,11 @@ node "D:\Deepseek Harness\DeepSeek Harness Desktop\resources\app.asar.unpacked\n
 - `install.ps1` / `uninstall.ps1` —— 安装/卸载（幂等；卸载自动撤销 host-patch）
 
 ## 更新日志
+
+### v0.1.3（2026-09-15）
+
+- **确认 DeepSeek Harness Desktop v3.5.0 兼容**：v3.5.0 原版宿主行为与 v3.3.0 相同（渲染端外链仍被默认丢弃、`clipboard-read` 仍被拒），host-patch 两处补丁依旧必要，在 v3.5.0 下实测自愈正常，无需改动。
+- **新增 name 防呆检测**：宿主加载时校验 `package.json` 的 `name` 必须为 `dsh-desktop-context-menu`。若为发布 GitHub Packages 而改成了 scoped 名（`@funnySnake11111/...`），DSH v3.5.0 会跳过该包的客户端加载（右键菜单不显示，host 端正常），现在会在宿主日志输出醒目警告。
 
 ### v0.1.2-hotfix1（2026-09-09）
 
