@@ -1,4 +1,4 @@
-﻿# 备份文件（不提交）
+# 备份文件（不提交）
 *.bak-*
 *.bak
 **/*.bak-*
@@ -8,3 +8,6 @@
 .DS_Store
 Thumbs.db
 *.log
+
+# 本机 npm 发布配置（含 GitHub Packages registry 指向，不提交）
+.npmrc

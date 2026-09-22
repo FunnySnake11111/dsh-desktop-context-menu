@@ -20,23 +20,6 @@
 
 **纯客户端 DOM 实现**（`inject: []`，零 React/内部结构依赖），随 DSH 应用更新**不会丢失**——插件只活在用户 profile（`~/.dsh`）与浏览器 localStorage，不修改应用安装目录。
 
-## 内置 host-patch（宿主补丁自愈）
-
-ningbainb/deepseek-harness-desktop 默认有两处宿主行为会破坏渲染端功能，本插件**自带补丁并自动维护**：
-
-1. **导航策略**（外链转系统浏览器）：ningbainb/deepseek-harness-desktop 默认拦截渲染端发起的 http(s) 弹窗并静默丢弃外部导航，导致聊天里的超链接、搜索源打不开系统浏览器。补丁 `lib/patches/navigation-policy.mjs` 将其放行到系统浏览器。
-2. **剪贴板权限**（loopback 放行 `clipboard-read`）：ningbainb/deepseek-harness-desktop 只允许 `clipboard-sanitized-write`，渲染端 `navigator.clipboard.readText()` 被拒，外部复制的内容粘贴失败。补丁 `lib/patches/renderer-permissions.mjs` 在相同安全边界（仅 loopback 来源）下同时放行 `clipboard-read`。
-
-自愈机制：
-- 宿主（主进程）加载插件时自动检测 `app.asar` 内各补丁目标是否带 `[user-patch]` 标记；缺失则备份 → 重建（只替换补丁目标，其余 134 个 in-asar 文件字节级不变）→ 写回 → 验证
-- **幂等**：已打补丁则跳过；**永不抛错**：任何失败只记录日志，不影响插件树
-- 因此 DSH 应用更新覆盖 `app.asar` 后，**下次启动自动重打，无需手动步骤**（不再需要 `apply-link-fix.ps1`）
-- `install.ps1` 安装时也会立即应用一次（应用关闭时最安全）
-
-手动备用：`node lib\host-patch.mjs`（无参数自动定位 app.asar，也可传路径）。
-
-**卸载会自动撤销**：`uninstall.ps1` 会调用 `node lib\host-patch.mjs --undo`，把 `app.asar` 的宿主补丁还原（首选最近一次的 `app.asar.bak-hostpatch-*` / `app.asar.bak-linkfix-*` 备份做字节级还原；无备份时用内置原版 `lib/patches/orig-*.mjs` 重建）。还原后聊天链接与剪贴板权限回到桌面默认行为。
-
 ## 安装
 
 插件发布到 **npm registry**，使用 DSH 官方安装通道（底层 pnpm，装完自动把声明了 `dsh.bundle` 的依赖登记进 `dsh.profile.bundles`）：
@@ -49,10 +32,10 @@ dsh plugin --profile desktop add dsh-desktop-context-menu
 如果你的 `dsh` CLI 不在 PATH，用 node 直接调它的入口：
 
 ```powershell
-node "D:\Deepseek Harness\DeepSeek Harness Desktop\resources\app.asar.unpacked\node_modules\@deepseek-ai\dsh\lib\bin.js" plugin --profile desktop add dsh-desktop-context-menu
+node "C:\Users\ITSupport\AppData\Local\Programs\DeepSeek Harness Desktop\resources\app.asar.unpacked\node_modules\@deepseek-ai\dsh\lib\bin.js" plugin --profile desktop add dsh-desktop-context-menu
 ```
 
-> **link / 源码安装注意（DSH v3.5.0）**：本地 `package.json` 的 `name` 必须保持 `dsh-desktop-context-menu`。若为了发布 GitHub Packages 而改成 scoped 名（如 `@funnySnake11111/dsh-desktop-context-menu`），DSH v3.5.0 的 client-modules 会因包名与 loader 条目不一致而跳过客户端加载——右键菜单不显示，但 host 端补丁仍正常。改回 `name` 并重启 DSH 即恢复；宿主端也会在启动时输出醒目警告。
+> **link / 源码安装注意（DSH v3.5.0）**：本地 `package.json` 的 `name` 必须保持 `dsh-desktop-context-menu`。若为了发布 GitHub Packages 而改成 scoped 名（如 `@funnySnake11111/dsh-desktop-context-menu`），DSH v3.5.0 的 client-modules 会因包名与 loader 条目不一致而跳过客户端加载——右键菜单不显示。改回 `name` 并重启 DSH 即恢复；宿主端也会在启动时输出醒目警告。
 
 ## 卸载
 
@@ -64,10 +47,8 @@ dsh plugin --profile desktop remove dsh-desktop-context-menu
 如果你的 `dsh` CLI 不在 PATH，用 node 直接调它的入口：
 
 ```powershell
-node "D:\Deepseek Harness\DeepSeek Harness Desktop\resources\app.asar.unpacked\node_modules\@deepseek-ai\dsh\lib\bin.js" plugin --profile desktop remove dsh-desktop-context-menu
+node "C:\Users\ITSupport\AppData\Local\Programs\DeepSeek Harness Desktop\resources\app.asar.unpacked\node_modules\@deepseek-ai\dsh\lib\bin.js" plugin --profile desktop remove dsh-desktop-context-menu
 ```
-
-> 插件自带的 host-patch（外链转系统浏览器、剪贴板权限）卸载后仍保留在 app.asar 中，不影响使用但不会自动还原。如需一并还原，运行仓库内的 `uninstall.ps1`（先撤销 host-patch，再执行标准卸载）。
 
 ## 设置
 
@@ -87,15 +68,15 @@ node "D:\Deepseek Harness\DeepSeek Harness Desktop\resources\app.asar.unpacked\n
 ## 文件
 
 - `lib/client.js` —— 浏览器端逻辑（`window.__ModuleLoader__.load` 格式，宿主经 `/plugins/dsh-desktop-context-menu/client.js` 提供）
-- `lib/index.js` —— 宿主侧：激活 cordis 条目 + 启动时自愈 host-patch
-- `lib/host-patch.mjs` —— 宿主补丁自愈/撤销模块（定位/检测/备份/重建/替换/验证，CLI 可单独运行：`--undo` 撤销）
-- `lib/patches/navigation-policy.mjs` —— 补丁源：主进程导航策略（外链转系统浏览器）
-- `lib/patches/renderer-permissions.mjs` —— 补丁源：渲染进程权限（loopback 放行 `clipboard-read`）
-- `lib/patches/orig-*.mjs` —— 各补丁的原版源码（撤销、无备份时还原用）
+- `lib/index.js` —— 宿主侧：激活 cordis 条目（空实现）
 - `cordis.patch.yml` —— 注册条目 `desktop-context-menu` → `dsh-desktop-context-menu`
-- `install.ps1` / `uninstall.ps1` —— 安装/卸载（幂等；卸载自动撤销 host-patch）
+- `install.ps1` / `uninstall.ps1` —— 安装/卸载（幂等）
 
 ## 更新日志
+
+### v0.2.0（2026-09-22）
+
+- **移除 host-patch（宿主补丁自愈）**：DSH Desktop 新版（v4.2.1）已自带内置浏览器，外链可直接在应用内打开、`clipboard-read` 也已在渲染端放行——原先两处补丁（导航策略、剪贴板权限）不再必要。删除 `lib/host-patch.mjs` 与 `lib/patches/`，宿主入口恢复为空实现。
 
 ### v0.1.3（2026-09-15）
 
