@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>dsh-desktop-context-menu · Claude 主题预览</title>
+<style>
+  body { font-family: -apple-system, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif; margin: 0; padding: 40px; background: #141413; color: #faf9f5; line-height: 1.8; }
+  /* 模拟 dsh-claude-style 注入的皮肤变量（真实环境由皮肤插件在 body 上定义），
+     让本页演示「装了皮肤」的观感；去掉这两条规则即可预览无皮肤时的 DeepSeek 兜底。 */
+  body:not([data-ds-dark-theme]) { --dsh-claude-card: #fcfcfb; --dsh-claude-raised: #fcfcfb; --dsh-claude-hover-bg: rgba(0, 0, 0, .08); --dsw-alias-brand-primary: #d97757; --dsw-alias-button-primary-hover: #c6613f; --dsw-alias-brand-text: #faf9f5; }
+  body[data-ds-dark-theme] { --dsh-claude-card: #1e1e1d; --dsh-claude-raised: #1e1e1d; --dsh-claude-hover-bg: rgba(255, 255, 255, .08); --dsw-alias-brand-primary: #d97757; --dsw-alias-button-primary-hover: #e08a6d; --dsw-alias-brand-text: #faf9f5; }
+  h1 { font-size: 20px; }
+  .tip { color: #b0aea5; font-size: 13px; margin-bottom: 24px; }
+  .demo { background: #1e1e1d; border: 1px solid #2e2c29; border-radius: 12px; padding: 20px 24px; max-width: 640px; }
+  code { background: #2e2c29; border-radius: 4px; padding: 1px 6px; font-family: Consolas, monospace; font-size: 13px; }
+  .toggle { position: fixed; right: 20px; top: 20px; background: #d97757; color: #faf9f5; border: 0; border-radius: 8px; padding: 8px 14px; cursor: pointer; font-size: 13px; }
+</style>
+</head>
+<body>
+<button class="toggle" onclick="toggleTheme()">切换 暗色 / 亮色</button>
+<h1>dsh-desktop-context-menu · Claude 主题预览</h1>
+<p class="tip">本页通过注入皮肤变量模拟「装了 dsh-claude-style」的 DSH 环境（clay 强调色 + 象牙/暗色卡片）。真实无皮肤环境会走 DeepSeek 蓝兜底——删除本页 &lt;style&gt; 里的皮肤变量规则即可预览那种观感。</p>
+<div class="demo">
+  <p>选中这段文字后 <strong>右键</strong>，即可看到按 Claude 规范重写的右键菜单：12px 圆角卡片、发丝线边框、32px 行高、线性 SVG 图标、clay 强调色、0.15s 入场动画。</p>
+  <p>再试试悬停「复制为 / 全选 / 翻译 / 站内搜索 / 导出对话」展开二级 flyout，点「设置」打开居中模态：头部整条可拖拽，字段按通用/全选/搜索/Agent/导出分组，分段控制与开关，搜索引擎切「自定义」时 URL 输入框就地出现。</p>
+  <p>示例代码文本（用于触发「找 Bug」）： <code>const x = { a: 1 }; if (x.b) { return; }</code></p>
+</div>
+<script>
+  // stub：捕获插件注册并立即应用（真实环境由 DSH client-modules 驱动）
+  window.__ModuleLoader__ = { load: function (m) { window.__cmenu = m; } };
+</script>
+<script src="../lib/client.js"></script>
+<script>
+  window.__cmenu.factory(function () { throw new Error("no requires expected"); }).apply({
+    effect: function (fn) { fn(); }
+  });
+  function toggleTheme() {
+    if (document.body.hasAttribute("data-ds-dark-theme")) document.body.removeAttribute("data-ds-dark-theme");
+    else document.body.setAttribute("data-ds-dark-theme", "");
+    document.body.style.background = document.body.hasAttribute("data-ds-dark-theme") ? "#141413" : "#fcfcfb";
+    document.body.style.color = document.body.hasAttribute("data-ds-dark-theme") ? "#faf9f5" : "#141413";
+  }
+  toggleTheme(); // 默认暗色（与当前 DSH preference: dark 一致）
+</script>
+</body>
+</html>
