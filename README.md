@@ -1,8 +1,7 @@
 # dsh-desktop-context-menu
 
 <p align="center">
-  <img src="assets/1.png" alt="右键实用工具菜单" width="30%"><br>
-  <sub>（截图为 v0.2 界面；v0.3 起视觉已按 Claude 主题整体重做，见下方「主题与视觉」）</sub>
+  <img src="assets/1.png" alt="右键实用工具菜单（Claude 主题 · 暗色）" width="30%">
 </p>
 
 **专为 [DeepSeek Harness Desktop](https://github.com/ningbainb/deepseek-harness-desktop) 开发的**右键实用工具菜单插件：页面任意位置选中文本后右键，弹出**常用实用工具菜单**（可配置替换原生菜单或同时显示），并提供可驻留的浮动工具条与居中可拖拽的设置模态。
