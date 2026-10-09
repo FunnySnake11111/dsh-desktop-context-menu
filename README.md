@@ -80,22 +80,11 @@ dsh plugin --profile desktop remove dsh-desktop-context-menu
 | | 快捷动作 | 六个动作独立开关（解释 / 总结 / 翻译成中文 / 翻译成英文 / 润色改写 / 找 Bug），两列排布 |
 | **导出** | 用户 / 助手称呼 | 自定义导出对话时的角色显示名 |
 
-## 本地预览
-
-不启动 DSH 也能在浏览器里体验完整交互：
-
-```
-preview/claude-preview.html
-```
-
-直接双击打开，选中文本右键即可。页面注入了模拟皮肤变量以演示「装了 dsh-claude-style」的观感；删除页内皮肤变量规则即可预览无皮肤时的 DeepSeek 兜底。
-
 ## 文件
 
 - `lib/client.js` —— 浏览器端全部逻辑与视觉（`window.__ModuleLoader__.load` 格式，宿主经 `/plugins/dsh-desktop-context-menu/client.js` 提供）
 - `lib/index.js` —— 宿主侧：激活 cordis 条目（空实现 + name 防呆警告）
 - `cordis.patch.yml` —— 注册条目 `desktop-context-menu` → `dsh-desktop-context-menu`
-- `preview/claude-preview.html` —— 浏览器可视化预览页
 - `CHANGELOG.md` —— 完整更新日志
 - `install.ps1` / `uninstall.ps1` —— 安装/卸载（幂等）
 
@@ -105,28 +94,12 @@ preview/claude-preview.html
 
 ### v0.4.3（2026-10-09）
 
-- 无皮肤环境的兜底调色板从 Claude 换为 DeepSeek（白/蓝，强调色 `#4d6bfe`），三层配色策略自洽；预览页改为注入模拟皮肤变量。
+> 涵盖 **v0.3.0 → v0.4.3** 的全部变更（中间版本未单独发布，随 `v0.4.3` 标签一次性发布）。
 
-### v0.4.2（2026-10-09）
-
-- **修复设置模态关闭按钮失效**：✕ 的 pointerdown 被拖拽头部捕获并 preventDefault 吞掉了 click；现在按钮先行 `stopPropagation`，拖拽处理对交互元素来源的按下直接忽略。
-- 设置页可读性重构：五个分组改为发丝线卡片，组内行以发丝线分隔。
-
-### v0.4.1（2026-10-09）
-
-- **修复设置模态滚动闪退**：捕获级 `scroll` 监听会把模态自身滚动条的滚动当作背景滚动而整体关闭；现在插件自身滚动面（按 `ROOT_ATTR` 祖先链判定）一律忽略，模态打开期间背景滚动/缩放/失焦不再波及。
-
-### v0.4.0（2026-10-09）
-
-- **设置面板推翻重写**：⚙ 打开**居中可拖拽模态**（带遮罩，✕/点遮罩/Esc 关闭，即时生效）；字段按「通用 / 全选 / 搜索 / Agent / 导出」五节组织；2~3 选项改用分段控制、布尔项改用开关；修复动态字段（搜索引擎切「自定义」时 URL 输入框就地出现，不再需要关掉重开）。
-- 菜单/飞出层/对话框的贴边翻转与居中定位改用 `offset*` 布局值，不受入场动画期间 `getBoundingClientRect` 变形影响。
-
-### v0.3.0（2026-10-09）
-
-- **Claude 主题视觉重写**：12px 圆角卡片、1px 发丝线边框、6px 内边距、32px 行高（6px 行圆角）、中性 hover wash、单一 clay 强调色（`#d97757`）、0.15s 一次性入场动画（尊重 `prefers-reduced-motion`）、细滚动条。
-- **SVG 线性图标库**：全部菜单图标替换为 16px 内联线性 SVG；大小写转换项使用等宽字体字形（AA / aa / Aa）。
-- **主题 token 三级回退**：皮肤 → 宿主 → 内置调色板，回退值随 `body[data-ds-dark-theme]` 自动切明暗；补齐 `:focus-visible` 焦点环与复选框 `accent-color`。
-- **兼容性核实**（DSH `0.2.0-rc.2` / Desktop 44.0.0）：client-modules 注册机制与 DOM 锚点逐一确认；元数据过滤补充 `data-variant="others"`。
+- **Claude 主题视觉重写**：12px 圆角卡片、1px 发丝线边框、6px 内边距、32px 行高、中性 hover wash、clay `#d97757` 强调色、0.15s 一次性入场动画（尊重 `prefers-reduced-motion`）；16px 线性 SVG 图标（大小写项为等宽字形）；主题 token 三级回退（皮肤 → 宿主 → DeepSeek 白/蓝兜底，随 `body[data-ds-dark-theme]` 自动切明暗）；补齐 `:focus-visible` 焦点环与 `accent-color`。
+- **设置模态重做**：⚙ 打开居中可拖拽模态（带遮罩，✕ / 点遮罩 / Esc 关闭，即时生效）；字段按「通用 / 全选 / 搜索 / Agent / 导出」五分组发丝线卡片组织；分段控制替换下拉框、开关替换复选框；动态字段（搜索引擎切「自定义」时 URL 输入框就地出现）。
+- **修复**：设置模态滚动闪退（捕获级 `scroll` 监听误伤模态自身滚动面）；✕ 关闭按钮被拖拽 `setPointerCapture` + `preventDefault` 吞掉 click；贴边翻转与居中定位改用 `offset*` 布局值。
+- **兼容性**：DSH `0.2.0-rc.2`（Desktop 44.0.0）client-modules 注册机制与全部 DOM 锚点逐一核实；元数据过滤补充新版 `data-variant="others"`；功能、设置项、存储键全部不变。
 
 ### v0.2.0（2026-09-22）
 

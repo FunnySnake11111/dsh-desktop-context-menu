@@ -2,61 +2,35 @@
 
 ## v0.4.3（2026-10-09）
 
-### 变更
+> 本条涵盖 **v0.3.0 → v0.4.3** 的全部变更（中间版本未单独发布，随 `v0.4.3` 标签一次性发布）。
 
-- **无皮肤环境的兜底调色板从 Claude 换为 DeepSeek**：裸环境（宿主主题变量也不存在时）的硬编码回退值整体改为宿主品牌风格——亮色白底 `#ffffff` / 墨字 `#0f1115` / 发丝线 `#e7ecf7`，暗色 `#212631` / `#eef1f8` / `#2a303c`，强调色统一 DeepSeek 蓝 `#4d6bfe`（hover：亮 `#3a57e8` / 暗 `#6a84ff`）。强调色上的文字回退改 `#fafbff`。真实 DSH 无论装没装皮肤都不受影响（分别由皮肤变量与宿主变量接管），仅纯裸环境观感更贴合宿主品牌。
-- 预览页改为注入模拟皮肤变量，继续演示「装了 dsh-claude-style」的观感；删除页内皮肤变量规则即可预览 DeepSeek 兜底。
+### Claude 主题视觉重写
 
-## v0.4.2（2026-10-09）
+- 视觉层按 dsh-claude-style 皮肤（palette: claude）的弹层规范重建：12px 圆角卡片、1px 发丝线边框、6px 内边距、32px 行高（2px 7px 内边距、6px 行圆角）、中性 hover wash、单一 clay 强调色（`#d97757`）、0.15s 一次性入场动画（尊重 `prefers-reduced-motion`）、细滚动条。
+- 全部菜单图标替换为 16px 内联线性 SVG（stroke 跟随 `currentColor`），大写/小写转换项使用等宽字体字形（AA / aa / Aa），明暗自动适配。
+- 主题 token 三级回退：`--dsh-claude-*`（皮肤）→ `--dsw-alias-*`（宿主）→ 内置兜底调色板；回退值随宿主 `body[data-ds-dark-theme]` 标记自动切明暗。兜底为 DeepSeek 白/蓝（亮：白底 `#ffffff` / 墨字 `#0f1115` / 发丝线 `#e7ecf7`；暗：`#212631` / `#eef1f8` / `#2a303c`；强调色统一 `#4d6bfe`，hover 亮 `#3a57e8` / 暗 `#6a84ff`）——无皮肤时菜单跟随宿主品牌，裸环境观感一致。
+- 可访问性：补齐 `:focus-visible` 焦点环（跟随 `--dsw-focus-ring-color`）、开关 `accent-color` 使用品牌色。
 
-### 修复
+### 设置模态重做
 
-- **设置模态关闭按钮失效**：✕ 位于拖拽头部内部，pointerdown 冒泡到头部后拖拽逻辑 `setPointerCapture` + `preventDefault`，而 pointerdown 的 preventDefault 会吞掉后续 click。现在与主菜单 ✕ 一致，按钮的 pointerdown 先行 `stopPropagation`，且拖拽处理对来源为交互元素（button/input/select/textarea）的按下直接忽略。
-
-### 设置页可读性重构
-
-- 五个分组改为**发丝线卡片**（1px 边框 + 10px 圆角），组内行与行之间用发丝线分隔（grouped-list 模式），选项不再混作一团。
-- 行间距节奏统一：卡片内每行 9px 垂直内边距，卡片间 12px，模态内边距收紧为 12/14px。
-
-## v0.4.1（2026-10-09）
+- **居中可拖拽模态**：点 ⚙ 屏幕居中弹出独立设置对话框（带遮罩），不再是 ⚙ 旁挤出的细长飞出面板；头部（grip + 标题 + ✕）整条可拖拽，指针捕获 + 视口夹取；点遮罩 / ✕ / Esc 关闭，设置即时生效、无保存按钮。
+- **分组卡片**：字段按「通用 / 全选 / 搜索 / Agent / 导出」五节组织，发丝线卡片 + 组内行分隔线（grouped-list 模式），不再一列平铺。
+- **分段控制与开关**：菜单模式、形态、全选行为、搜索引擎改用 Claude 风分段控件（chip 轨道 + 中性高亮活动项）；全部布尔项（显示文本工具、翻译与站内搜索、自动发送、六个 Agent 动作）改为 Claude 风开关，Agent 动作两列排布。
+- **动态字段修复**：搜索引擎切「自定义」时 URL 输入框就地即时出现——旧面板只在打开时构建一次，需关掉重开才能看到。
 
 ### 修复
 
-- **设置模态滚动闪退**：`scroll` 监听以捕获模式挂在 `window` 上，模态内部滚动条（设置内容区、主菜单长列表）滚动时事件同样抵达监听器并触发整体关闭。现在来自插件自身滚动面的滚动事件一律忽略（按 `ROOT_ATTR` 祖先链判定）；模态打开期间，背景滚动 / 窗口缩放 / 失焦也不再波及它，关闭只走 ✕ / 点遮罩 / Esc 三条路径。
-
-## v0.4.0（2026-10-09）
-
-### 设置面板推翻重写
-
-- **居中模态**：点 ⚙ 后屏幕居中弹出独立设置对话框（带遮罩），不再是 ⚙ 旁挤出的细长飞出面板。点遮罩 / ✕ / Esc 关闭，设置即时生效、无保存按钮。
-- **可拖拽**：对话框头部（grip + 标题 + ✕）整条可拖拽，指针捕获 + 视口夹取，可移到任意位置。
-- **分组**：字段按「通用 / 全选 / 搜索 / Agent / 导出」五节组织，11px 大写字距标题（Claude 规格），不再是一列平铺。
-- **分段控制**：菜单模式、形态、全选行为、搜索引擎改用 Claude 风分段控件（chip 轨道 + 中性高亮活动项），2~3 个选项不再被迫下拉。
-- **开关**：全部布尔项（显示文本工具、翻译与站内搜索、自动发送、六个 Agent 动作）改为 Claude 风开关（clay 激活色），Agent 动作排成两列网格。
-- **动态字段修复**：搜索引擎切到「自定义」时，URL 输入框**就地即时出现**——旧面板只在打开时构建一次，改完必须关掉重开才能看到。
-
-### 其他
-
-- 菜单 / 飞出层 / 对话框的贴边翻转与居中定位改用 `offsetLeft/Top/Width/Height` 布局值计算，不再受 0.15s 入场缩放动画期间 `getBoundingClientRect` 变形的影响。
-
-## v0.3.0（2026-10-09）
-
-### 新增
-
-- **Claude 主题视觉重写**：视觉层按本地 `dsh-claude-style` 皮肤（palette: claude）的设计规范重建——12px 圆角卡片、1px 发丝线边框、6px 内边距、32px 行高（2px 7px 内边距、6px 行圆角）、中性 hover wash、单一 clay 强调色（`#d97757`）、0.15s 一次性入场动画（尊重 `prefers-reduced-motion`）、细滚动条。
-- **SVG 线性图标库**：全部菜单图标替换为 16px 内联线性 SVG（stroke 跟随 currentColor），大写/小写转换项使用等宽字体字形（AA/aa/Aa）。图标继承主题文字色，明暗自动适配。
-- **主题 token 三级回退**：每个颜色按 `--dsh-claude-*`（皮肤）→ `--dsw-alias-*`（宿主）→ Claude 调色板回退值解析；回退值通过宿主 `body[data-ds-dark-theme]` 标记自动切换明暗，皮肤未加载时观感依旧协调。
-- 可访问性：补齐 `:focus-visible` 焦点环（跟随 `--dsw-focus-ring-color`）、复选框 `accent-color` 使用品牌色。
+- **设置模态滚动闪退**：捕获级 `scroll` 监听会把模态自身滚动条的滚动当作背景滚动而整体关闭；现在插件自身滚动面（按 `ROOT_ATTR` 祖先链判定）一律忽略，模态打开期间背景滚动 / 缩放 / 失焦不再波及，关闭只走 ✕ / 点遮罩 / Esc 三条路径。
+- **设置模态 ✕ 失效**：✕ 的 pointerdown 被拖拽头部 `setPointerCapture` + `preventDefault` 吞掉后续 click；现在按钮先行 `stopPropagation`，且拖拽处理对来源为交互元素（button/input/select/textarea）的按下直接忽略。
+- 菜单 / 飞出层 / 对话框的贴边翻转与居中定位改用 `offsetLeft/Top/Width/Height` 布局值，不受 0.15s 入场缩放动画期间 `getBoundingClientRect` 变形影响。
 
 ### 兼容性
 
 - 确认 **DSH 0.2.0-rc.2**（Desktop 44.0.0）client-modules 机制完全兼容：`window.__ModuleLoader__.load` 注册、`dsh.client` 声明、`exports["./client"]` 解析均与当前运行时一致。
 - DOM 锚点逐一核对当前 `dsh-client-ui-chat` / `dsh-client-ui-conversation` bundle：`data-chat-flow-kind`、`data-turn-tail`、`data-chat-anchor-key`、`data-conversation-scroll`、`textarea[data-phase]`、"加载更早"按钮均在。
 - 「剔除元数据」过滤选择器补充新版 `data-variant="others"` 块（旧锚点 `data-tool` / `data-chat-call-id` / `data-produced-files-row` 已从新版 chat UI 消失，保留在选择器中无害）。
-
-### 变更
-
-- 功能、设置项、存储键全部不变；仅视觉层（CSS 与图标渲染）重写。
+- 功能、设置项、存储键（含旧键迁移）全部不变；仅视觉层与设置交互重写。
+- 预览页（`preview/claude-preview.html`）注入模拟皮肤变量，演示「装了 dsh-claude-style」的观感；删除页内皮肤变量规则即可预览 DeepSeek 兜底。
 
 ## v0.1.3（2026-09-15）
 
