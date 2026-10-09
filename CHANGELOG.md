@@ -1,5 +1,18 @@
 # 更新日志
 
+## v0.4.4（2026-10-09）
+
+### 修复
+
+- **对话流空白处右键时「当前消息 / 本轮对话」不可用**：两个按钮的可用性此前依赖右键落点精确命中带 `data-chat-flow-kind` 的消息行，点在消息间隙、末条消息下方的留白或列内边距时被禁用。现在落点在对话区域内但未命中消息行时，回退到**离点击位置最近的消息行**（行带几何距离判定，命中行带内记 0 距离，平局取文档序靠前的外层行）；落点远离对话区域（±48px 之外）仍保持禁用。一级「全选」按钮（默认 = 当前消息）与二级菜单共用同一解析器，行为一致。
+- **未启用 Claude Style 时界面一片死灰**：核实当前宿主运行时的 alias 调色板本身是中性灰方案（暗色 `bg-overlay` 解析为灰、发丝线仅 6% 白、`brand-primary` 也解析为灰阶），此前「无皮肤时跟随宿主 alias」导致菜单整体灰掉。配色解析改为**两级**：有皮肤（`body[data-dsh-claude-style]`）时走皮肤变量（Claude 观感不变）；无皮肤时直接采用**固定调色板**（亮色白卡片；暗色黑灰卡片 `#202124`，强调色保持 DeepSeek 蓝 `#4d6bfe`，发丝线与阴影可见），不再经过宿主灰阶 alias。新增 `--dcm-on-accent`（强调色上的文字/滑块）与 `--dcm-field`（分段控制/输入框底色）token。
+- **Agent 搜索 / Agent 动作失效**：当前运行时的输入框已从 `textarea` 换为 Lexical contenteditable（`ComposerContentEditable`，`data-phase` + `data-placeholder`），旧的 `textarea[data-phase]` 与可见 textarea 扫描两条路径全部落空，`findComposer()` 恒为 null，按钮一直处于禁用态。现在优先匹配**可见的 contenteditable**（`[contenteditable="true"][data-phase]` / `[data-placeholder]`，与会话根容器的 `data-phase` 通过 contenteditable 区分），textarea 仅作旧版回退；填充改走 `execCommand` selectAll + insertText（触发 Lexical 监听的 beforeinput/input 事件链），发送按钮回退匹配更新为「发送消息」（locale `input.send`），锁定判定补充 `aria-disabled`。
+
+### 变更
+
+- 「翻译」子菜单中经 Agent 路由的两项更名为「由Agent 翻译成中文 / 由Agent 翻译成英文」，与站点直达（Google 翻译 / DeepL）区分；Agent 动作子菜单内的同名项不变。
+- **菜单重排**：搜索相关聚为一组——快捷搜索 → 站点搜索 → Agent 搜索 → Agent 动作；文本工具组为 字数统计 → 大小写 → 翻译。「站内搜索」更名「站点搜索」，设置开关同步为「显示翻译与站点搜索」；Agent 动作改由自身可用条件控制（不再受「显示文本工具」开关影响）。
+
 ## v0.4.3（2026-10-09）
 
 > 本条涵盖 **v0.3.0 → v0.4.3** 的全部变更（中间版本未单独发布，随 `v0.4.3` 标签一次性发布）。
