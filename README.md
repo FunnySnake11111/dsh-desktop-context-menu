@@ -36,17 +36,12 @@
 dsh plugin --profile desktop add dsh-desktop-context-menu
 ```
 
-如果你的 `dsh` CLI 不在 PATH，用 node 直接调它的入口：
-
-```powershell
-node "C:\Users\ITSupport\AppData\Local\Programs\DeepSeek Harness Desktop\resources\app.asar.unpacked\node_modules\@deepseek-ai\dsh\lib\bin.js" plugin --profile desktop add dsh-desktop-context-menu
-```
-
 本地开发可用 link 模式（改代码即时生效，刷新页面即可）：
 
 ```powershell
-.\install.ps1              # 默认 link: 安装到 desktop profile
-.\install.ps1 -Source npm  # 或从 npm 安装
+# link: 后接仓库绝对路径；Windows 下路径含空格时 link 解析会失败，
+# 需改用 8.3 短路径（如 G:\DEEPSE~1\...）或把仓库放到无空格路径下
+dsh plugin --profile desktop add link:<仓库绝对路径>
 ```
 
 > **name 防呆**：本地 `package.json` 的 `name` 必须保持 `dsh-desktop-context-menu`。若为了发布 GitHub Packages 而改成 scoped 名（如 `@funnySnake11111/dsh-desktop-context-menu`），client-modules 会因包名与 loader 条目不一致而跳过客户端加载——右键菜单不显示。改回 `name` 并重启 DSH 即恢复；宿主端会在启动时输出醒目警告。
@@ -85,7 +80,6 @@ dsh plugin --profile desktop remove dsh-desktop-context-menu
 - `lib/index.js` —— 宿主侧：激活 cordis 条目（空实现 + name 防呆警告）
 - `cordis.patch.yml` —— 注册条目 `desktop-context-menu` → `dsh-desktop-context-menu`
 - `CHANGELOG.md` —— 完整更新日志
-- `install.ps1` / `uninstall.ps1` —— 安装/卸载（幂等）
 
 ## 更新日志
 

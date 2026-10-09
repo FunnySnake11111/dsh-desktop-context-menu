@@ -1,5 +1,11 @@
 # 更新日志
 
+## v0.4.5（2026-10-09）
+
+### 变更
+
+- **仓库瘦身**：移除旧第三方 desktop 分支环境遗留的 `install.ps1` / `uninstall.ps1`（内含特定机器的 CLI 绝对路径与 8.3 短路径 workaround），安装/卸载统一走标准 `dsh plugin --profile desktop add/remove` 通道，link 开发模式直接写入 README；同时移除 `preview/` 开发预览页与磁盘上的陈旧 `.bak` 备份、仓库内 `.npmrc`（GitHub Packages 实验残留）。插件运行四件套（`lib/client.js`、`lib/index.js`、`cordis.patch.yml`、`package.json`）与文档不变。
+
 ## v0.4.4（2026-10-09）
 
 ### 修复
