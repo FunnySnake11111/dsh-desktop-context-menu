@@ -89,5 +89,3 @@ dsh plugin --profile desktop remove dsh-desktop-context-menu
 - **设置模态重做**：⚙ 打开居中可拖拽模态（带遮罩，✕ / 点遮罩 / Esc 关闭，即时生效）；字段按「通用 / 全选 / 搜索 / Agent / 导出」五分组发丝线卡片组织；分段控制替换下拉框、开关替换复选框；动态字段（搜索引擎切「自定义」时 URL 输入框就地出现）。
 - **修复**：设置模态滚动闪退（捕获级 `scroll` 监听误伤模态自身滚动面）；✕ 关闭按钮被拖拽 `setPointerCapture` + `preventDefault` 吞掉 click；贴边翻转与居中定位改用 `offset*` 布局值。
 - **兼容性**：DSH `0.2.0-rc.2`（Desktop 44.0.0）client-modules 注册机制与全部 DOM 锚点逐一核实；元数据过滤补充新版 `data-variant="others"`；功能、设置项、存储键全部不变。
-
-- 
