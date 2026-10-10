@@ -1,5 +1,11 @@
 # 更新日志
 
+## v0.4.6（2026-10-10）
+
+### 文档
+
+- README「主题与视觉」章节新增搭配建议：与 [dsh-claude-style](https://github.com/Nwflower/dsh-claude-style) 一并使用以获得最佳的视觉体验。（代码无变化）
+
 ## v0.4.5（2026-10-09）
 
 ### 变更

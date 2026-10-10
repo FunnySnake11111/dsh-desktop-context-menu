@@ -19,6 +19,8 @@
 
 ## 主题与视觉
 
+> **建议与 [dsh-claude-style](https://github.com/Nwflower/dsh-claude-style) 一并使用，以获得最佳的视觉体验。**
+
 - 视觉层按 [dsh-claude-style](https://github.com/Nwflower/dsh-claude-style) 皮肤的弹层规范构建：**12px 卡片圆角、1px 发丝线边框、6px 内边距、32px 行高（6px 行圆角）、中性 hover wash、单一强调色、0.15s 一次性入场动画**（尊重 `prefers-reduced-motion`）
 - **16px 内联线性 SVG 图标**（stroke 跟随 `currentColor`），大小写转换项使用等宽字体字形，明暗自动适配
 - **两级配色解析**（随宿主 `body[data-ds-dark-theme]` 标记自动切明暗）：
