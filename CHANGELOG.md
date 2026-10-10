@@ -1,5 +1,11 @@
 # 更新日志
 
+## v0.4.7（2026-10-10）
+
+### 修复
+
+- **「大小写」可用状态不一致**：触发按钮按「可编辑字段内存在选区」禁用，但其二级菜单项始终可点、点击后 `transformCase` 因无可编辑选区而静默无效——出现「按钮呈禁用态、子菜单却能展开且三项看起来可用」的矛盾表现。现在：①二级项与触发按钮共用同一判定（`textarea`/`input` 内选区长度 > 0）并同步禁用；②禁用的触发按钮不再响应 hover 展开子菜单；③Lexical contenteditable 输入框无 `selectionStart` 可写回，大小写对其明确禁用（此前为「可点但无效」）。
+
 ## v0.4.6（2026-10-10）
 
 ### 文档
@@ -19,6 +25,10 @@
 - **对话流空白处右键时「当前消息 / 本轮对话」不可用**：两个按钮的可用性此前依赖右键落点精确命中带 `data-chat-flow-kind` 的消息行，点在消息间隙、末条消息下方的留白或列内边距时被禁用。现在落点在对话区域内但未命中消息行时，回退到**离点击位置最近的消息行**（行带几何距离判定，命中行带内记 0 距离，平局取文档序靠前的外层行）；落点远离对话区域（±48px 之外）仍保持禁用。一级「全选」按钮（默认 = 当前消息）与二级菜单共用同一解析器，行为一致。
 - **未启用 Claude Style 时界面一片死灰**：核实当前宿主运行时的 alias 调色板本身是中性灰方案（暗色 `bg-overlay` 解析为灰、发丝线仅 6% 白、`brand-primary` 也解析为灰阶），此前「无皮肤时跟随宿主 alias」导致菜单整体灰掉。配色解析改为**两级**：有皮肤（`body[data-dsh-claude-style]`）时走皮肤变量（Claude 观感不变）；无皮肤时直接采用**固定调色板**（亮色白卡片；暗色黑灰卡片 `#202124`，强调色保持 DeepSeek 蓝 `#4d6bfe`，发丝线与阴影可见），不再经过宿主灰阶 alias。新增 `--dcm-on-accent`（强调色上的文字/滑块）与 `--dcm-field`（分段控制/输入框底色）token。
 - **Agent 搜索 / Agent 动作失效**：当前运行时的输入框已从 `textarea` 换为 Lexical contenteditable（`ComposerContentEditable`，`data-phase` + `data-placeholder`），旧的 `textarea[data-phase]` 与可见 textarea 扫描两条路径全部落空，`findComposer()` 恒为 null，按钮一直处于禁用态。现在优先匹配**可见的 contenteditable**（`[contenteditable="true"][data-phase]` / `[data-placeholder]`，与会话根容器的 `data-phase` 通过 contenteditable 区分），textarea 仅作旧版回退；填充改走 `execCommand` selectAll + insertText（触发 Lexical 监听的 beforeinput/input 事件链），发送按钮回退匹配更新为「发送消息」（locale `input.send`），锁定判定补充 `aria-disabled`。
+
+### 变更
+
+- 导出对话的完成提示去掉「Electron 会弹两次保存框：请用第一个，关闭第二个」的说明——新版 DSH 已修复 `<a download>` 双保存框问题，toast 恢复简短的「已导出 文件名」。
 
 ### 变更
 
