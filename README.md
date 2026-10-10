@@ -4,7 +4,7 @@
   <img src="assets/1.png" alt="右键实用工具菜单（Claude 主题 · 暗色）" width="30%">
 </p>
 
-**专为 [DeepSeek Harness Desktop](https://github.com/ningbainb/deepseek-harness-desktop) 开发的**右键实用工具菜单插件：页面任意位置选中文本后右键，弹出**常用实用工具菜单**（可配置替换原生菜单或同时显示），并提供可驻留的浮动工具条与居中可拖拽的设置模态。
+**专为Deepseek Harness 桌面端开发的**右键实用工具菜单插件：页面任意位置选中文本后右键，弹出**常用实用工具菜单**（可配置替换原生菜单或同时显示），并提供可驻留的浮动工具条与居中可拖拽的设置模态。
 
 ## 功能
 
@@ -35,16 +35,6 @@
 # 标准方式：从 npm registry 安装
 dsh plugin --profile desktop add dsh-desktop-context-menu
 ```
-
-本地开发可用 link 模式（改代码即时生效，刷新页面即可）：
-
-```powershell
-# link: 后接仓库绝对路径；Windows 下路径含空格时 link 解析会失败，
-# 需改用 8.3 短路径（如 G:\DEEPSE~1\...）或把仓库放到无空格路径下
-dsh plugin --profile desktop add link:<仓库绝对路径>
-```
-
-> **name 防呆**：本地 `package.json` 的 `name` 必须保持 `dsh-desktop-context-menu`。若为了发布 GitHub Packages 而改成 scoped 名（如 `@funnySnake11111/dsh-desktop-context-menu`），client-modules 会因包名与 loader 条目不一致而跳过客户端加载——右键菜单不显示。改回 `name` 并重启 DSH 即恢复；宿主端会在启动时输出醒目警告。
 
 ## 卸载
 
@@ -95,29 +85,9 @@ dsh plugin --profile desktop remove dsh-desktop-context-menu
 
 ### v0.4.3（2026-10-09）
 
-> 涵盖 **v0.3.0 → v0.4.3** 的全部变更（中间版本未单独发布，随 `v0.4.3` 标签一次性发布）。
-
 - **Claude 主题视觉重写**：12px 圆角卡片、1px 发丝线边框、6px 内边距、32px 行高、中性 hover wash、clay `#d97757` 强调色、0.15s 一次性入场动画（尊重 `prefers-reduced-motion`）；16px 线性 SVG 图标（大小写项为等宽字形）；主题 token 三级回退（皮肤 → 宿主 → DeepSeek 白/蓝兜底，随 `body[data-ds-dark-theme]` 自动切明暗）；补齐 `:focus-visible` 焦点环与 `accent-color`。
 - **设置模态重做**：⚙ 打开居中可拖拽模态（带遮罩，✕ / 点遮罩 / Esc 关闭，即时生效）；字段按「通用 / 全选 / 搜索 / Agent / 导出」五分组发丝线卡片组织；分段控制替换下拉框、开关替换复选框；动态字段（搜索引擎切「自定义」时 URL 输入框就地出现）。
 - **修复**：设置模态滚动闪退（捕获级 `scroll` 监听误伤模态自身滚动面）；✕ 关闭按钮被拖拽 `setPointerCapture` + `preventDefault` 吞掉 click；贴边翻转与居中定位改用 `offset*` 布局值。
 - **兼容性**：DSH `0.2.0-rc.2`（Desktop 44.0.0）client-modules 注册机制与全部 DOM 锚点逐一核实；元数据过滤补充新版 `data-variant="others"`；功能、设置项、存储键全部不变。
 
-### v0.2.0（2026-09-22）
-
-- **移除 host-patch（宿主补丁自愈）**：DSH Desktop v4.2.1 已自带内置浏览器，外链可直接在应用内打开、`clipboard-read` 已在渲染端放行，原先两处补丁不再必要。删除 `lib/host-patch.mjs` 与 `lib/patches/`，宿主入口恢复为空实现。
-
-### v0.1.3（2026-09-15）
-
-- 确认 Desktop v3.5.0 兼容；新增 `name` 防呆检测（scoped 包名会导致 client-modules 跳过客户端加载，宿主日志输出醒目警告）。
-
-### v0.1.2-hotfix1（2026-09-09）
-
-- host-patch 改用 Electron 的 `original-fs` 读写 app.asar，修复 v3.3.0 下自愈失败（`node:fs` 被打补丁导致 `.asar` 路径抛 `ENOENT`）。
-
-### v0.1.2（2026-09-09）
-
-- 适配 Desktop v3.3.0：asar 重建白名单支持新增的 `runtime-support/` 目录；补丁源更新为 v3.3.0 原始字节。
-
-### v0.1.1
-
-- npm 发布包 `files` 白名单，排除历史备份文件。
+- 
